@@ -20,11 +20,30 @@ import { RenderComments } from "./RenderComments";
 export const CommentsList: React.FunctionComponent = () => {
   const { listItemCommentsState, setlistItemCommentsState } = useContext(ListItemCommentsStateContext);
   const { configurationListClasses } = useListItemCommentsStyles();
-  const { getListItemComments, getNextPageOfComments, addComment, deleteComment } = useSpAPI();
+  const { getListItemComments, getNextPageOfComments, addComment, deleteComment, getListInfo } = useSpAPI();
   const { comments, isScrolling, pageInfo, commentAction, commentToAdd, selectedComment } = listItemCommentsState;
   const { hasMore, nextLink } = pageInfo;
   const scrollPanelRef = useRef<HTMLDivElement>();
   const { errorInfo } = listItemCommentsState;
+
+  const _loadListInfo = useCallback(
+    async () => {
+      try {
+        const listInfo = await getListInfo();
+        setlistItemCommentsState({
+          type: EListItemCommentsStateTypes.SET_LIST_INFO,
+          payload: listInfo,
+        });
+      } catch (error) {
+        const _errorInfo: IErrorInfo = { showError: true, error: error };
+        setlistItemCommentsState({
+          type: EListItemCommentsStateTypes.SET_ERROR_INFO,
+          payload: _errorInfo,
+        });
+      }
+    },
+    [setlistItemCommentsState, getListInfo]
+  );
 
   const _loadComments = useCallback(async () => {
     try {
@@ -76,7 +95,7 @@ export const CommentsList: React.FunctionComponent = () => {
     [setlistItemCommentsState, addComment, _loadComments]
   );
 
-  const _onADeleteComment = useCallback(
+  const _onDeleteComment = useCallback(
     async (commentId: number) => {
       if (!commentId) return;
       try {
@@ -111,19 +130,25 @@ export const CommentsList: React.FunctionComponent = () => {
         (async () => {
           // delete comment
           const commentId = Number(selectedComment.id);
-          await _onADeleteComment(commentId);
+          await _onDeleteComment(commentId);
         })().then(() => { /* no-op; */}).catch(() => { /* no-op; */ });
         break;
       default:
         break;
     }
-  }, [commentAction, selectedComment, commentToAdd, _onAddComment, _onADeleteComment]);
+  }, [commentAction, selectedComment, commentToAdd, _onAddComment, _onDeleteComment]);
 
   useEffect(() => {
     (async () => {
       await _loadComments();
     })().then(() => { /* no-op; */}).catch(() => { /* no-op; */ });
   }, [_loadComments]);
+
+  useEffect(() => {
+    (async () => {
+      await _loadListInfo();
+    })().then(() => { /* no-op; */}).catch(() => { /* no-op; */ });
+  }, []);
 
   const handleScroll = React.useCallback(async () => {
     const _scrollPosition = getScrollPosition(scrollPanelRef.current);

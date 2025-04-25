@@ -10,6 +10,7 @@ interface returnObject {
   getNextPageOfComments: (nextLink: string) => Promise<IlistItemCommentsResults>;
   addComment: (comment: IAddCommentPayload) => Promise<IComment>;
   deleteComment: (commentId: number) => Promise<void>;
+  getListInfo: () => Promise<{ isLibrary: boolean; title: string }>;
 }
 
 export const useSpAPI = (): returnObject => {
@@ -102,5 +103,25 @@ export const useSpAPI = (): returnObject => {
     [serviceScope]
   );
 
-  return { getListItemComments, getNextPageOfComments, addComment, deleteComment };
+  const getListInfo = useCallback(async (): Promise<{ isLibrary: boolean; title: string }> => {
+    const spHttpClient = serviceScope.consume(SPHttpClient.serviceKey);
+    if (!spHttpClient) return;
+    const _endPointUrl = `${webUrl ?? _webUrl}/_api/web/lists(guid'${listId}')?$select=BaseTemplate,Title`;
+
+    const _listInfoResponse: SPHttpClientResponse = await spHttpClient.get(
+      `${_endPointUrl}`,
+      SPHttpClient.configurations.v1
+    );
+
+    const _listInfoResults = (await _listInfoResponse.json()) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+    const _returnInfo = {
+      isLibrary: _listInfoResults?.BaseTemplate === 101, // 101 = Document Library
+      title: _listInfoResults?.Title ?? '',
+    };
+
+    return _returnInfo;
+  }, [serviceScope]);
+
+  return { getListItemComments, getNextPageOfComments, addComment, deleteComment, getListInfo };
 };

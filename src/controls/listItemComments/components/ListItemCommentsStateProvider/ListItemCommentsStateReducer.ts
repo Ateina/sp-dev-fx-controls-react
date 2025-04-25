@@ -28,6 +28,8 @@ export const ListItemCommentsStateReducer = (
       return { ...state, commentToAdd: action.payload as IAddCommentPayload };
     case EListItemCommentsStateTypes.SET_SELECTED_COMMENT:
       return { ...state, selectedComment: action.payload as IComment };
+    case EListItemCommentsStateTypes.SET_LIST_INFO:
+      return { ...state, listInfo: action.payload as { isLibrary: boolean; title: string } };
     default:
       return state;
   }

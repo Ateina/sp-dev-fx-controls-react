@@ -16,6 +16,10 @@ const initialState: IListItemCommentsState = {
   commentAction: undefined,
   commentToAdd: {} as IAddCommentPayload,
   selectedComment: {} as IComment,
+  listInfo: {
+    isLibrary: false,
+    title: ""
+  }
 };
 
 const stateInit: IListItemCommentsStateContext = {

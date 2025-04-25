@@ -12,6 +12,7 @@ import { Text} from "@fluentui/react/lib/Text";
 import { ECommentAction } from "../../common/ECommentAction";
 import { IAddCommentPayload } from "../../models/IAddCommentPayload";
 import { useMsGraphAPI } from "../..";
+import { TextField } from "@fluentui/react/lib/TextField";
 
 export interface IAddCommentProps {}
 
@@ -20,7 +21,8 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
   const { getUsers, getSuggestions } = useMsGraphAPI();
   const { reactMentionStyles, mentionsClasses, componentClasses } = useAddCommentStyles();
   const [singleLine, setSingleLine] = useState<boolean>(true);
-  const { setlistItemCommentsState } = useContext(ListItemCommentsStateContext);
+  const { listItemCommentsState, setlistItemCommentsState } = useContext(ListItemCommentsStateContext);
+  const { listInfo } = listItemCommentsState;
   const _addCommentText = useRef<IAddCommentPayload>({ mentions: [], text: "" });
 
   const sugestionsContainer = useRef<HTMLDivElement>();
@@ -68,7 +70,7 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
     }
   };
 
-  const renderSugestion = useCallback((suggestion: SuggestionDataItem): React.ReactNode => {
+  const renderSuggestion = useCallback((suggestion: SuggestionDataItem): React.ReactNode => {
     const _user: IUserInfo = {
       id: suggestion.id as string,
       displayName: suggestion.display,
@@ -95,7 +97,7 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
 
   return (
     <>
-    {/** Render Sugestions in the host element */}
+    {/** Render Suggestions in the host element */}
       <div
         id="renderSugestions"
         ref={(el) => {
@@ -103,21 +105,32 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
         }}
       />
       <div className={componentClasses.container} style={{ height: singleLine ? 35 : "unset" }}>
-        <MentionsInput
-          value={commentText}
-          onChange={_onChange}
-          placeholder="@mention or comment"
-          style={_reactMentionStyles}
-          suggestionsPortalHost={sugestionsContainer.current}
-        >
-          <Mention
-            trigger="@"
-            data={_searchData}
-            renderSuggestion={renderSugestion}
-            displayTransform={(id, display) => `@${display}`}
-            className={mentionsClasses.mention}
-          />
-        </MentionsInput>
+        {
+          listInfo.isLibrary ?
+          <TextField
+            value={commentText}
+            onChange={(ev, newValue) => _onChange(ev, newValue, newValue, [])}
+            placeholder={"Add a comment"}
+            //style={_reactMentionStyles}
+          /> :
+          <MentionsInput
+            value={commentText}
+            onChange={_onChange}
+            placeholder={"@mention or comment"}
+            style={_reactMentionStyles}
+            suggestionsPortalHost={sugestionsContainer.current}
+          >
+            <Mention
+              trigger="@"
+              data={_searchData}
+              renderSuggestion={renderSuggestion}
+              displayTransform={(id, display) => `@${display}`}
+              className={mentionsClasses.mention}
+            />
+
+          </MentionsInput>
+        }
+
         <Stack horizontal horizontalAlign="end" tokens={{ padding: 10 }}>
           <IconButton
             iconProps={{ iconName: "send" }}

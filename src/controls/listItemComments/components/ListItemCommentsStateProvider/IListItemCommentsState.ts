@@ -16,4 +16,5 @@ export interface IListItemCommentsState {
   commentAction: ECommentAction;
   commentToAdd: IAddCommentPayload;
   selectedComment: IComment;
+  listInfo: { isLibrary: boolean; title: string } | undefined;
 }
