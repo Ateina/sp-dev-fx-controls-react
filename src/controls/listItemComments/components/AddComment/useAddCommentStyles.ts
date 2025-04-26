@@ -3,6 +3,7 @@ import { IDocumentCardStyles } from "@fluentui/react/lib/DocumentCard";
 import { IStackStyles } from "@fluentui/react/lib/Stack";
 import { IStyle, mergeStyleSets } from "@fluentui/react/lib/Styling";
 import { AppContext } from "../../common";
+import { ITextFieldStyles } from "@fluentui/react/lib/components/TextField";
 
 export const useAddCommentStyles = () => { // eslint-disable-line @typescript-eslint/explicit-function-return-type
   const { theme } = React.useContext(AppContext);
@@ -140,6 +141,19 @@ export const useAddCommentStyles = () => { // eslint-disable-line @typescript-es
     },
   };
 
+  const inputStyles: Partial<ITextFieldStyles> = {
+    fieldGroup: {
+      border: "none",
+      minHeight: 35,
+      borderColor: "transparent",
+      "::after": {
+        border: "none",
+        borderColor: "transparent",
+      } as IStyle,
+    } as IStyle,
+  };
+
+
   return {
     documentCardUserStyles,
     deleteButtonContainerStyles,
@@ -148,5 +162,6 @@ export const useAddCommentStyles = () => { // eslint-disable-line @typescript-es
     searchMentionContainerStyles,
     mentionsClasses,
     componentClasses,
+    inputStyles
   };
 };

@@ -5,12 +5,13 @@ import { IlistItemCommentsResults } from "./../models";
 import { IAddCommentPayload } from "../models/IAddCommentPayload";
 import { IComment } from "../components/Comments/IComment";
 import { PageContext } from "@microsoft/sp-page-context";
+import { ISourceListInfo } from "../models/ISourceListInfo";
 interface returnObject {
   getListItemComments: () => Promise<IlistItemCommentsResults>;
   getNextPageOfComments: (nextLink: string) => Promise<IlistItemCommentsResults>;
   addComment: (comment: IAddCommentPayload) => Promise<IComment>;
   deleteComment: (commentId: number) => Promise<void>;
-  getListInfo: () => Promise<{ isLibrary: boolean; title: string }>;
+  getListInfo: () => Promise<ISourceListInfo>;
 }
 
 export const useSpAPI = (): returnObject => {
@@ -103,7 +104,7 @@ export const useSpAPI = (): returnObject => {
     [serviceScope]
   );
 
-  const getListInfo = useCallback(async (): Promise<{ isLibrary: boolean; title: string }> => {
+  const getListInfo = useCallback(async (): Promise<ISourceListInfo> => {
     const spHttpClient = serviceScope.consume(SPHttpClient.serviceKey);
     if (!spHttpClient) return;
     const _endPointUrl = `${webUrl ?? _webUrl}/_api/web/lists(guid'${listId}')?$select=BaseTemplate,Title`;
@@ -116,7 +117,7 @@ export const useSpAPI = (): returnObject => {
     const _listInfoResults = (await _listInfoResponse.json()) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const _returnInfo = {
-      isLibrary: _listInfoResults?.BaseTemplate === 101, // 101 = Document Library
+      baseTemplate: _listInfoResults?.BaseTemplate ?? 100,
       title: _listInfoResults?.Title ?? '',
     };
 

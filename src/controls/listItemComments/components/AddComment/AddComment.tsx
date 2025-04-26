@@ -19,13 +19,13 @@ export interface IAddCommentProps {}
 export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAddCommentProps) => {
   const [commentText, setCommentText] = useState<string>("");
   const { getUsers, getSuggestions } = useMsGraphAPI();
-  const { reactMentionStyles, mentionsClasses, componentClasses } = useAddCommentStyles();
+  const { reactMentionStyles, mentionsClasses, componentClasses, inputStyles } = useAddCommentStyles();
   const [singleLine, setSingleLine] = useState<boolean>(true);
   const { listItemCommentsState, setlistItemCommentsState } = useContext(ListItemCommentsStateContext);
   const { listInfo } = listItemCommentsState;
   const _addCommentText = useRef<IAddCommentPayload>({ mentions: [], text: "" });
 
-  const sugestionsContainer = useRef<HTMLDivElement>();
+  const suggestionsContainer = useRef<HTMLDivElement>();
   let _reactMentionStyles = reactMentionStyles;
 
   const _onChange = useCallback((event, newValue: string, newPlainTextValue: string, mentions: MentionItem[]) => {
@@ -101,24 +101,26 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
       <div
         id="renderSugestions"
         ref={(el) => {
-          sugestionsContainer.current = el;
+          suggestionsContainer.current = el;
         }}
       />
       <div className={componentClasses.container} style={{ height: singleLine ? 35 : "unset" }}>
         {
-          listInfo.isLibrary ?
+          listInfo.baseTemplate === 101 ?
           <TextField
             value={commentText}
             onChange={(ev, newValue) => _onChange(ev, newValue, newValue, [])}
             placeholder={"Add a comment"}
-            //style={_reactMentionStyles}
+            multiline={!singleLine}
+            autoAdjustHeight={true}
+            styles={inputStyles}
           /> :
           <MentionsInput
             value={commentText}
             onChange={_onChange}
             placeholder={"@mention or comment"}
             style={_reactMentionStyles}
-            suggestionsPortalHost={sugestionsContainer.current}
+            suggestionsPortalHost={suggestionsContainer.current}
           >
             <Mention
               trigger="@"

@@ -5,6 +5,7 @@ import { IComment } from "../Comments/IComment";
 import { IPageInfo } from "../../models";
 import { ECommentAction } from "../../common/ECommentAction";
 import { IAddCommentPayload } from "../../models/IAddCommentPayload";
+import { ISourceListInfo } from "../../models/ISourceListInfo";
 
 // Global State (Store)
 export interface IListItemCommentsState {
@@ -16,5 +17,5 @@ export interface IListItemCommentsState {
   commentAction: ECommentAction;
   commentToAdd: IAddCommentPayload;
   selectedComment: IComment;
-  listInfo: { isLibrary: boolean; title: string } | undefined;
+  listInfo: ISourceListInfo | undefined;
 }

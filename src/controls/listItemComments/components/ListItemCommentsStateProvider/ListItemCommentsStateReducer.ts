@@ -5,6 +5,7 @@ import { IListItemCommentsState } from "./IListItemCommentsState";
 import { IPageInfo } from "../../models/IPageInfo";
 import { ECommentAction } from "../../common/ECommentAction";
 import { IAddCommentPayload } from "../../models/IAddCommentPayload";
+import { ISourceListInfo } from "../../models/ISourceListInfo";
 
 // Reducer
 export const ListItemCommentsStateReducer = (
@@ -29,7 +30,7 @@ export const ListItemCommentsStateReducer = (
     case EListItemCommentsStateTypes.SET_SELECTED_COMMENT:
       return { ...state, selectedComment: action.payload as IComment };
     case EListItemCommentsStateTypes.SET_LIST_INFO:
-      return { ...state, listInfo: action.payload as { isLibrary: boolean; title: string } };
+      return { ...state, listInfo: action.payload as ISourceListInfo };
     default:
       return state;
   }

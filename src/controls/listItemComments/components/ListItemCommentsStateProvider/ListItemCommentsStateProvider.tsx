@@ -5,6 +5,7 @@ import { IListItemCommentsStateContext } from "./IListItemCommentsStateContext";
 import { IPageInfo } from "../../models/IPageInfo";
 import { IAddCommentPayload } from "../../models/IAddCommentPayload";
 import { IComment } from "../Comments/IComment";
+import { ISourceListInfo } from "../../models/ISourceListInfo";
 // Reducer
 // Initial State (Store )
 const initialState: IListItemCommentsState = {
@@ -16,10 +17,7 @@ const initialState: IListItemCommentsState = {
   commentAction: undefined,
   commentToAdd: {} as IAddCommentPayload,
   selectedComment: {} as IComment,
-  listInfo: {
-    isLibrary: false,
-    title: ""
-  }
+  listInfo: {} as ISourceListInfo
 };
 
 const stateInit: IListItemCommentsStateContext = {
