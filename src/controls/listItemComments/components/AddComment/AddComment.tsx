@@ -13,6 +13,7 @@ import { ECommentAction } from "../../common/ECommentAction";
 import { IAddCommentPayload } from "../../models/IAddCommentPayload";
 import { useMsGraphAPI } from "../..";
 import { TextField } from "@fluentui/react/lib/TextField";
+import { SPListBaseTemplate } from "../../../../common/model/SPListBaseTemplate";
 
 export interface IAddCommentProps {}
 
@@ -106,7 +107,7 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
       />
       <div className={componentClasses.container} style={{ height: singleLine ? 35 : "unset" }}>
         {
-          listInfo.baseTemplate === 101 ?
+          listInfo.baseTemplate === SPListBaseTemplate.DocumentLibrary ?
           <TextField
             value={commentText}
             onChange={(ev, newValue) => _onChange(ev, newValue, newValue, [])}
