@@ -153,7 +153,6 @@ export const useAddCommentStyles = () => { // eslint-disable-line @typescript-es
     } as IStyle,
   };
 
-
   return {
     documentCardUserStyles,
     deleteButtonContainerStyles,

@@ -130,7 +130,6 @@ export const AddComment: React.FunctionComponent<IAddCommentProps> = (props: IAd
               displayTransform={(id, display) => `@${display}`}
               className={mentionsClasses.mention}
             />
-
           </MentionsInput>
         }
 
