@@ -1,5 +1,24 @@
 # Releases
 
+## 3.22.0
+
+### Enhancements
+
+- SharePoint Framework v1.21.1 support [#1998](https://github.com/pnp/sp-dev-fx-controls-react/pull/1998)
+- `ListItemComments`: Implement like and unlike ability to list item comments control [#1974](https://github.com/pnp/sp-dev-fx-controls-react/pull/1974)
+- `ListItemComments`: Need a feature to view the list of users who liked a comment [#2003](https://github.com/pnp/sp-dev-fx-controls-react/issues/2003)
+- `ListItemComments`: Clickable links [#1969](https://github.com/pnp/sp-dev-fx-controls-react/issues/1969)
+
+### Fixes
+
+- `DynamicForm`: Added choice radio button handling [#1798](https://github.com/pnp/sp-dev-fx-controls-react/pull/1798)
+- `FilePicker`: Global quill styles from FilePicker overwrite other quill editors [#1996](https://github.com/pnp/sp-dev-fx-controls-react/issues/1996)
+- `FilePicker`: Unable to browse through organization assets library when located on root site [#1784](https://github.com/pnp/sp-dev-fx-controls-react/issues/1784)
+
+### Contributors
+
+Special thanks to our contributors (in alphabetical order): [Alberto Gutierrez Perez](https://github.com/albegut), [Alex Terentiev](https://github.com/AJIXuMuK), [Guido Zambarda](https://github.com/GuidoZam), [Sandeep P S](https://github.com/Sandeep-FED).
+
 ## 3.21.0
 
 ### New control(s)
@@ -30,10 +49,11 @@
 - `DynamicForm`: required Fields not checked before submit [#1953](https://github.com/pnp/sp-dev-fx-controls-react/issues/1953)
 - `DynamicForm`: Fix for 1788/1794 and add styles property for support customizing styling [#1913](https://github.com/pnp/sp-dev-fx-controls-react/pull/1913)
 - `DynamicForm`: Hotfix for 1937 and 1961 [#1967](https://github.com/pnp/sp-dev-fx-controls-react/pull/1967)
+- `AdaptiveCardHost`: Fix default value for Date.Input [#1972](https://github.com/pnp/sp-dev-fx-controls-react/pull/1972)
 
 ### Contributors
 
-Special thanks to our contributors (in alphabetical order): [Adam Wójcik](https://github.com/Adam-it), [Alessandro Chiavarino](https://github.com/Alesso-Chiavarino), [Antanina Druzhkina](https://github.com/Ateina), [brianpmccullough](https://github.com/brianpmccullough), [EnablingLogic](https://github.com/EnablingLogic), [Guido Zambarda](https://github.com/GuidoZam), [João Mendes](https://github.com/joaojmendes), [Kevin T. Coughlin](https://github.com/KevinTCoughlin), [Konrad K.](https://github.com/wilecoyotegenius), [Martin Lingstuyl](https://github.com/martinlingstuyl), [Michaël Maillot](https://github.com/michaelmaillot), [Nello D'Andrea](https://github.com/ferrarirosso), [Nishkalank Bezawada](https://github.com/NishkalankBezawada), [Petr Malášek](https://github.com/MalasekPetr), [wuxiaojun514](https://github.com/wuxiaojun514).
+Special thanks to our contributors (in alphabetical order): [Adam Wójcik](https://github.com/Adam-it), [Alessandro Chiavarino](https://github.com/Alesso-Chiavarino), [Antanina Druzhkina](https://github.com/Ateina), [brianpmccullough](https://github.com/brianpmccullough), [EnablingLogic](https://github.com/EnablingLogic), [Guido Zambarda](https://github.com/GuidoZam), [João Mendes](https://github.com/joaojmendes), [Kevin T. Coughlin](https://github.com/KevinTCoughlin), [Konrad K.](https://github.com/wilecoyotegenius), [Martin Lingstuyl](https://github.com/martinlingstuyl), [Michaël Maillot](https://github.com/michaelmaillot), [Nello D'Andrea](https://github.com/ferrarirosso), [Nishkalank Bezawada](https://github.com/NishkalankBezawada), [Patrik Hellgren](https://github.com/patrikhellgren), [Petr Malášek](https://github.com/MalasekPetr), [wuxiaojun514](https://github.com/wuxiaojun514).
 
 ## 3.20.0
 
