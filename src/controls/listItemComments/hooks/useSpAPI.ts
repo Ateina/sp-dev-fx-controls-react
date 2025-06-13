@@ -183,5 +183,6 @@ export const useSpAPI = (): returnObject => {
     deleteComment,
     likeComment,
     unlikeComment,
+    getListInfo,
   };
 };

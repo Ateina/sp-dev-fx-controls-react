@@ -27,6 +27,7 @@ export const CommentsList: React.FunctionComponent = () => {
     deleteComment,
     likeComment,
     unlikeComment,
+    getListInfo,
   } = useSpAPI();
   const {
     comments,
@@ -224,7 +225,7 @@ export const CommentsList: React.FunctionComponent = () => {
         (async () => {
           // delete comment
           const commentId = Number(selectedComment.id);
-          await _onADeleteComment(commentId);
+          await _onDeleteComment(commentId);
         })()
           .then(() => {
             /* no-op; */
@@ -241,7 +242,7 @@ export const CommentsList: React.FunctionComponent = () => {
     selectedComment,
     commentToAdd,
     _onAddComment,
-    _onADeleteComment,
+    _onDeleteComment,
   ]);
 
   useEffect(() => {
