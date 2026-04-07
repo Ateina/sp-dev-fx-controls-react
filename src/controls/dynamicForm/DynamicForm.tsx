@@ -789,12 +789,24 @@ export class DynamicFormBase extends React.Component<
    */
   private uploadQueuedAttachments = async (itemId: number): Promise<void> => {
     const { listId } = this.props;
-    const attachmentsField = this.state.fieldCollection.find(f => f.fieldType === "Attachments");
+    const { fieldCollection } = this.state;
+    const attachmentsField = fieldCollection.find(f => f.fieldType === "Attachments");
     const pendingFiles: File[] = attachmentsField?.newValue || [];
+    if (pendingFiles.length === 0) return;
+
     for (const file of pendingFiles) {
       await this._spService.addAttachment(listId, itemId, file.name, file, this.webURL)
         .catch(err => this.updateFormMessages(MessageBarType.error, err.message));
     }
+
+    // Reload attachments from SP and clear the pending queue
+    const updatedAttachments = await this._spService.getListItemAttachments(listId, itemId, this.webURL)
+      .catch(err => this.updateFormMessages(MessageBarType.error, err.message));
+    this.setState({
+      fieldCollection: fieldCollection.map(field =>
+        field.fieldType === "Attachments" ? { ...field, value: updatedAttachments, newValue: undefined } : field
+      )
+    });
   }
 
   private onAttachmentChanged = (file: File): void => {
