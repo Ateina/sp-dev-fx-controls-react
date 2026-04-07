@@ -395,6 +395,7 @@ define([], () => {
     DynamicFormChooseFileLabel: "File",
     DynamicFormChooseFileButtonText: "Select file",
     DynamicFormRequiredFileMessage: "File is required.",
+    DynamicFormAddAttachmentsLabel: "Add attachments",
     customDisplayName: "Use this location:",
     ListItemCommentDIalogDeleteSubText: "Are you sure that you want to delete this comment?",
     ListItemCommentsDialogDeleteTitle: "Confirm Delete Comment",

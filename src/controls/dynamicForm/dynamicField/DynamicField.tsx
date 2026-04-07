@@ -2,7 +2,7 @@ import '@pnp/sp/folders';
 import { ChoiceFieldFormatType, sp } from '@pnp/sp/presets/all';
 import '@pnp/sp/webs';
 import * as strings from 'ControlStrings';
-import { ActionButton } from '@fluentui/react/lib/Button';
+import { ActionButton, DefaultButton, IconButton } from '@fluentui/react/lib/Button';
 import { Dropdown, IDropdownOption, IDropdownProps } from '@fluentui/react/lib/Dropdown';
 import { DatePicker } from '@fluentui/react/lib/DatePicker';
 import { Icon } from '@fluentui/react/lib/Icon';
@@ -42,6 +42,7 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
   }
 
   private _classNames: IProcessedStyleSet<IDynamicFieldStyles>;
+  private _fileInputRef = React.createRef<HTMLInputElement>();
 
   public componentDidUpdate(): void {
     if ((this.props.defaultValue === "" || this.props.defaultValue === null) && this.state.changedValue === null) {
@@ -95,7 +96,8 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
       customIcon,
       orderBy,
       choiceType,
-      useModernTaxonomyPickerControl
+      useModernTaxonomyPickerControl,
+      listItemId
     } = this.props;
 
     const {
@@ -647,6 +649,67 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
           />
           {descriptionEl}
         </div>;
+      case 'Attachments': {
+        const attachments: { FileName: string; ServerRelativeUrl: string }[] = value || [];
+        const pendingFiles: File[] = newValue || [];
+        return <div className={styles.fieldContainer}>
+          <div className={styles.titleContainer}>
+            <Icon className={styles.fieldIcon} iconName={customIcon ?? "Attach"} />
+            {labelEl}
+          </div>
+          <Stack tokens={{ childrenGap: 4 }}>
+            {attachments.map(attachment => (
+              <Stack key={attachment.FileName} horizontal verticalAlign="center">
+                <DefaultButton
+                  href={listItemId ? `${attachment.ServerRelativeUrl}?web=1` : undefined}
+                  target="_blank"
+                  title={attachment.FileName}
+                  disabled={!listItemId}
+                  styles={{ root: styles.attachmentButton, flexContainer: styles.attachmentButtonFlexContainer, label: styles.attachmentButtonLabel }}
+                >
+                  {attachment.FileName}
+                </DefaultButton>
+                <IconButton
+                  iconProps={{ iconName: 'Cancel' }}
+                  title={`Remove attachment ${attachment.FileName}`}
+                  ariaLabel={`Remove attachment ${attachment.FileName}`}
+                  disabled={disabled}
+                  styles={{ root: styles.attachmentDeleteButton }}
+                />
+              </Stack>
+            ))}
+            {pendingFiles.map(file => (
+              <Stack key={file.name} horizontal verticalAlign="center">
+                <DefaultButton
+                  title={file.name}
+                  disabled={true}
+                  styles={{ root: styles.attachmentButton, flexContainer: styles.attachmentButtonFlexContainer, label: styles.attachmentButtonLabel }}
+                >
+                  {file.name}
+                </DefaultButton>
+                <IconButton
+                  iconProps={{ iconName: 'Cancel' }}
+                  title={`Remove attachment ${file.name}`}
+                  ariaLabel={`Remove attachment ${file.name}`}
+                  disabled={disabled}
+                  styles={{ root: styles.attachmentDeleteButton }}
+                />
+              </Stack>
+            ))}
+            {!disabled &&
+              <>
+                <input type="file" ref={this._fileInputRef} style={{ display: 'none' }} onChange={this.onAttachmentFileChange} />
+                <DefaultButton
+                  styles={{ root: styles.attachmentAddButton }}
+                  onClick={() => this._fileInputRef.current?.click()}
+                >
+                  {strings.DynamicFormAddAttachmentsLabel}
+                </DefaultButton>
+              </>
+            }
+          </Stack>
+        </div>;
+      }
     }
 
     return null;
@@ -876,6 +939,16 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
     catch (error) {
       console.log(`Error save Into SharePoint`, error);
     }
+  }
+
+  private onAttachmentFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (this.props.onAttachmentChanged) {
+      this.props.onAttachmentChanged(file);
+    }
+    // Reset input so same file can be selected again
+    event.target.value = '';
   }
 }
 

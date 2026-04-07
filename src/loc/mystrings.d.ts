@@ -433,6 +433,7 @@ KPIPercentOfTotal: string;
   DynamicFormChooseFileLabel: string;
   DynamicFormChooseFileButtonText: string;
   DynamicFormRequiredFileMessage: string;
+  DynamicFormAddAttachmentsLabel: string;
 
   customDisplayName: string;
 

@@ -103,6 +103,10 @@ export interface IClientFormFileFieldInfo extends IClientFormBaseInfo {
   FieldType: "File";
   Type: "File";
 }
+export interface IClientFormAttachmentsFieldInfo extends IClientFormBaseInfo {
+  FieldType: "Attachments";
+  Type: "Attachments";
+}
 export interface IClientFormTextFieldInfo extends IClientFormBaseInfo {
   FieldType: "Text" | "Note";
   Type: "Text" | "Note";
@@ -217,7 +221,7 @@ export interface IClientFormLookupFieldInfo extends IClientFormBaseLookupFieldIn
   LookupListUrl: string;
   LookupFieldName: string;
 }
-export type ClientFormFieldInfo = IClientFormTextFieldInfo | IClientFormNumberFieldInfo | IClientFormChoiceFieldInfo | IClientFormDateFieldInfo | IClientFormLookupFieldInfo | IClientFormUserFieldInfo | IClientFormTaxonomyFieldInfo | IClientFormImageFieldInfo | IClientFormHyperlinkFieldInfo | IClientFormLocationFieldInfo | IClientFormCurrencyFieldInfo | IClientFormBooleanFieldInfo | IClientFormFileFieldInfo;
+export type ClientFormFieldInfo = IClientFormTextFieldInfo | IClientFormNumberFieldInfo | IClientFormChoiceFieldInfo | IClientFormDateFieldInfo | IClientFormLookupFieldInfo | IClientFormUserFieldInfo | IClientFormTaxonomyFieldInfo | IClientFormImageFieldInfo | IClientFormHyperlinkFieldInfo | IClientFormLocationFieldInfo | IClientFormCurrencyFieldInfo | IClientFormBooleanFieldInfo | IClientFormFileFieldInfo | IClientFormAttachmentsFieldInfo;
 export interface IClientFormInfoByContentType {
   [contentType: string]: ClientFormFieldInfo[];
 }
@@ -276,4 +280,15 @@ export interface ISPService {
      * @params listId, orderBy, onViewsRetrived
      */
     getViews(listId?: string, orderBy?: orderBy, filter?: string): Promise<ISPViews>;
+
+    /**
+     * Get list item attachments
+     *
+     * @param listId
+     * @param itemId
+     * @param webUrl
+     */
+    getListItemAttachments(listId: string, itemId: number, webUrl?: string): Promise<any[]>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    addAttachment(listId: string, itemId: number, fileName: string, file: File, webUrl?: string): Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    deleteAttachment(fileName: string, listId: string, itemId: number, webUrl?: string): Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

@@ -477,7 +477,7 @@ export class DynamicFormBase extends React.Component<
         if (fieldcolumnInternalName.startsWith('_x') || fieldcolumnInternalName.startsWith('_')) {
           fieldcolumnInternalName = `OData_${fieldcolumnInternalName}`;
         }
-        if (field.newValue !== undefined) {
+        if (field.newValue !== undefined && fieldType !== "Attachments") {
 
           let value = field.newValue;
 
@@ -592,6 +592,7 @@ export class DynamicFormBase extends React.Component<
       }
 
       let apiError: string;
+      let savedItemId: number | undefined = listItemId;
 
       // If we have the item ID, we simply need to update it
       let newETag: string | undefined = undefined;
@@ -636,6 +637,7 @@ export class DynamicFormBase extends React.Component<
             // check if item contenttype is passed, then update the object with content type id, else, pass the object
             if (contentTypeId !== undefined && contentTypeId.startsWith("0x01")) objects[contentTypeIdField] = contentTypeId;
             const iar = await sp.web.lists.getById(listId).items.add(objects);
+            savedItemId = iar.data.ID;
             if (onSubmitted) {
               onSubmitted(
                 iar.data,
@@ -693,6 +695,11 @@ export class DynamicFormBase extends React.Component<
           }
           console.log("Error", error);
         }
+      }
+
+      // Upload queued attachments after save
+      if (!apiError && savedItemId) {
+        await this.uploadQueuedAttachments(savedItemId);
       }
 
       this.setState({
@@ -776,6 +783,33 @@ export class DynamicFormBase extends React.Component<
   /**
    * Triggered when the user makes any field value change in the form
    */
+
+  /**
+   * Triggered when the user selects a file to attach
+   */
+  private uploadQueuedAttachments = async (itemId: number): Promise<void> => {
+    const { listId } = this.props;
+    const attachmentsField = this.state.fieldCollection.find(f => f.fieldType === "Attachments");
+    const pendingFiles: File[] = attachmentsField?.newValue || [];
+    for (const file of pendingFiles) {
+      await this._spService.addAttachment(listId, itemId, file.name, file, this.webURL)
+        .catch(err => this.updateFormMessages(MessageBarType.error, err.message));
+    }
+  }
+
+  private onAttachmentChanged = (file: File): void => {
+    const { fieldCollection } = this.state;
+    const attachmentsField = fieldCollection.find(f => f.fieldType === "Attachments");
+    if (attachmentsField) {
+      const pending: File[] = attachmentsField.newValue || [];
+      this.setState({
+        fieldCollection: fieldCollection.map(f =>
+          f.fieldType === "Attachments" ? { ...f, newValue: [...pending, file] } : f
+        )
+      });
+    }
+  }
+
   private onChange = async (
     internalName: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1068,7 +1102,8 @@ export class DynamicFormBase extends React.Component<
         }
 
         item = await spListItem.get().catch(err => this.updateFormMessages(MessageBarType.error, err.message));
-
+        item["attachments"] = await this._spService.getListItemAttachments(listId, listItemId, this.webURL).catch(err => this.updateFormMessages(MessageBarType.error, err.message));
+        
         if (onListItemLoaded) {
           await onListItemLoaded(item);
         }
@@ -1100,6 +1135,7 @@ export class DynamicFormBase extends React.Component<
         installedLanguages = await sp.web.regionalSettings.getInstalledLanguages();
       }
 
+      console.log('[DynamicForm] fieldCollection:', sortedFields);
       this.setState({
         contentTypeId,
         clientValidationFormulas,
@@ -1458,6 +1494,9 @@ export class DynamicFormBase extends React.Component<
             if (defaultValue !== undefined && defaultValue !== null) defaultValue = Boolean(Number(defaultValue));
             if (value !== undefined && value !== null) value = Boolean(Number(value));
           }
+          if (field.FieldType === "Attachments") {
+            value = item ? item.attachments : [];
+          }
 
           tempFields.push({
             value,
@@ -1496,7 +1535,8 @@ export class DynamicFormBase extends React.Component<
             showAsPercentage: showAsPercentage,
             customIcon: customIcons ? customIcons[field.InternalName] : undefined,
             useModernTaxonomyPickerControl: useModernTaxonomyPicker,
-            choiceType: choiceType
+            choiceType: choiceType,
+            onAttachmentChanged: this.onAttachmentChanged
           });
 
           // This may not be necessary now using RenderListDataAsStream

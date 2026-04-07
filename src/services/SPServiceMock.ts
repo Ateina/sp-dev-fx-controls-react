@@ -31,6 +31,15 @@ export default class SPServiceMock implements ISPService {
   public getViews(listId?: string, orderBy?: orderBy, filter?: string) : Promise<ISPViews> {
     return;
   }
+  public getListItemAttachments(_listId: string, _itemId: number, _webUrl?: string): Promise<any[]> { // eslint-disable-line @typescript-eslint/no-explicit-any
+    throw new Error("Method not implemented.");
+  }
+  public addAttachment(_listId: string, _itemId: number, _fileName: string, _file: File, _webUrl?: string): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+    throw new Error("Method not implemented.");
+  }
+  public deleteAttachment(_fileName: string, _listId: string, _itemId: number, _webUrl?: string): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+    throw new Error("Method not implemented.");
+  }
 
   /**
   * The mock lists to present to the local workbench

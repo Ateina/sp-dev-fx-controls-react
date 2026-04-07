@@ -46,6 +46,9 @@ export interface IDynamicFieldProps {
     additionalData?: FieldChangeAdditionalData
   ) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
 
+  /** Fired by DynamicField when an attachment file is selected */
+  onAttachmentChanged?: (file: File) => void;
+
   /** Represents the value of the field as updated by the user. Only updated by fields when changed. */
   newValue?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -124,4 +127,9 @@ export interface IDynamicFieldStyles {
  thumbnailFieldButtons:IStyle;
  selectedFileContainer:IStyle;
  fieldRequired:IStyle;
+ attachmentButton:IStyle;
+ attachmentButtonFlexContainer:IStyle;
+ attachmentButtonLabel:IStyle;
+ attachmentDeleteButton:IStyle;
+ attachmentAddButton:IStyle;
 }

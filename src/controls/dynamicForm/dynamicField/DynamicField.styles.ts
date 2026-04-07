@@ -25,6 +25,11 @@ export const getFieldStyles = (
     thumbnailFieldButtons: 'thumbnailFieldButtons',
     selectedFileContainer: 'selectedFileContainer',
     fieldRequired: 'fieldRequired',
+    attachmentButton: 'attachmentButton',
+    attachmentButtonFlexContainer: 'attachmentButtonFlexContainer',
+    attachmentButtonLabel: 'attachmentButtonLabel',
+    attachmentDeleteButton: 'attachmentDeleteButton',
+    attachmentAddButton: 'attachmentAddButton',
   };
 
   const fieldDisplayNoPadding_style: IStyle = {
@@ -130,6 +135,82 @@ export const getFieldStyles = (
     thumbnailFieldButtons: [
       globalClassNames.thumbnailFieldButtons,
       { display: 'flex' },
+    ],
+    attachmentButton: [
+      globalClassNames.attachmentButton,
+      {
+        backgroundColor: palette.themeLighter,
+        color: palette.themePrimary,
+        borderRadius: '14px 2px 2px 14px',
+        border: 'none',
+        fontWeight: '400',
+        height: '28px',
+        margin: 0,
+        padding: '0 0 0 6px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        selectors: {
+          ':hover': {
+            backgroundColor: palette.themeLight,
+            color: palette.themePrimary,
+          }
+        }
+      }
+    ],
+    attachmentAddButton: [
+      globalClassNames.attachmentAddButton,
+      {
+        width: '100%',
+        border: `1px solid ${palette.neutralTertiaryAlt}`,
+        borderRadius: '2px',
+        color: palette.themePrimary,
+        backgroundColor: 'transparent',
+        textAlign: 'left',
+        paddingLeft: '6px',
+        selectors: {
+          ':hover': {
+            backgroundColor: palette.neutralLighter,
+            color: palette.themePrimary,
+            border: `1px solid ${palette.neutralTertiaryAlt}`,
+          }
+        }
+      }
+    ],
+    attachmentDeleteButton: [
+      globalClassNames.attachmentDeleteButton,
+      {
+        backgroundColor: palette.themeLighter,
+        color: palette.themePrimary,
+        borderRadius: '2px 14px 14px 2px',
+        border: 'none',
+        height: '28px',
+        minWidth: '28px',
+        margin: 0,
+        selectors: {
+          ':hover': {
+            backgroundColor: palette.themeLight,
+            color: palette.themePrimary,
+          }
+        }
+      }
+    ],
+    attachmentButtonFlexContainer: [
+      globalClassNames.attachmentButtonFlexContainer,
+      {
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+      }
+    ],
+    attachmentButtonLabel: [
+      globalClassNames.attachmentButtonLabel,
+      {
+        fontWeight: '400',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        maxWidth: '160px',
+        lineHeight: '1.5'
+      }
     ],
     errormessage: [
       globalClassNames.errormessage,
