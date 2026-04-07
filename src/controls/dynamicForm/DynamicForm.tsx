@@ -697,8 +697,9 @@ export class DynamicFormBase extends React.Component<
         }
       }
 
-      // Upload queued attachments after save
+      // Process queued attachment deletions and uploads after save
       if (!apiError && savedItemId) {
+        await this.deleteQueuedAttachments(savedItemId);
         await this.uploadQueuedAttachments(savedItemId);
       }
 
@@ -783,6 +784,40 @@ export class DynamicFormBase extends React.Component<
   /**
    * Triggered when the user makes any field value change in the form
    */
+
+  private deleteQueuedAttachments = async (itemId: number): Promise<void> => {
+    const { listId } = this.props;
+    const { pendingAttachmentDeletions } = this.state;
+    if (!pendingAttachmentDeletions?.length) return;
+    for (const fileName of pendingAttachmentDeletions) {
+      await this._spService.deleteAttachment(fileName, listId, itemId, this.webURL)
+        .catch(err => this.updateFormMessages(MessageBarType.error, err.message));
+    }
+    this.setState({ pendingAttachmentDeletions: [] });
+  }
+
+  private onAttachmentDeleted = (fileName: string): void => {
+    const { fieldCollection, pendingAttachmentDeletions } = this.state;
+    this.setState({
+      pendingAttachmentDeletions: [...(pendingAttachmentDeletions || []), fileName],
+      fieldCollection: fieldCollection.map(field =>
+        field.fieldType === "Attachments"
+          ? { ...field, value: (field.value || []).filter((a: { FileName: string }) => a.FileName !== fileName) } // eslint-disable-line @typescript-eslint/no-explicit-any
+          : field
+      )
+    });
+  }
+
+  private onPendingAttachmentDeleted = (fileName: string): void => {
+    const { fieldCollection } = this.state;
+    this.setState({
+      fieldCollection: fieldCollection.map(field =>
+        field.fieldType === "Attachments"
+          ? { ...field, newValue: (field.newValue || []).filter((file: File) => file.name !== fileName) }
+          : field
+      )
+    });
+  }
 
   /**
    * Triggered when the user selects a file to attach
@@ -1147,7 +1182,6 @@ export class DynamicFormBase extends React.Component<
         installedLanguages = await sp.web.regionalSettings.getInstalledLanguages();
       }
 
-      console.log('[DynamicForm] fieldCollection:', sortedFields);
       this.setState({
         contentTypeId,
         clientValidationFormulas,
@@ -1548,7 +1582,9 @@ export class DynamicFormBase extends React.Component<
             customIcon: customIcons ? customIcons[field.InternalName] : undefined,
             useModernTaxonomyPickerControl: useModernTaxonomyPicker,
             choiceType: choiceType,
-            onAttachmentChanged: this.onAttachmentChanged
+            onAttachmentChanged: this.onAttachmentChanged,
+            onAttachmentDeleted: this.onAttachmentDeleted,
+            onPendingAttachmentDeleted: this.onPendingAttachmentDeleted
           });
 
           // This may not be necessary now using RenderListDataAsStream

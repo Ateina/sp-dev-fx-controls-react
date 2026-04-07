@@ -34,4 +34,5 @@ export interface IDynamicFormState {
   selectedFile?: IFilePickerResult;
   missingSelectedFile?: boolean;
   contentTypeId?: string;
+  pendingAttachmentDeletions?: string[];
 }

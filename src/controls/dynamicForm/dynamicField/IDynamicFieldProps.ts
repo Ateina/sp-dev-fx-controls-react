@@ -49,6 +49,12 @@ export interface IDynamicFieldProps {
   /** Fired by DynamicField when an attachment file is selected */
   onAttachmentChanged?: (file: File) => void;
 
+  /** Fired by DynamicField when an existing attachment is queued for deletion */
+  onAttachmentDeleted?: (fileName: string) => void;
+
+  /** Fired by DynamicField when a pending (not yet uploaded) attachment is removed */
+  onPendingAttachmentDeleted?: (fileName: string) => void;
+
   /** Represents the value of the field as updated by the user. Only updated by fields when changed. */
   newValue?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -132,4 +138,5 @@ export interface IDynamicFieldStyles {
  attachmentButtonLabel:IStyle;
  attachmentDeleteButton:IStyle;
  attachmentAddButton:IStyle;
+ attachmentAddButtonLabel:IStyle;
 }

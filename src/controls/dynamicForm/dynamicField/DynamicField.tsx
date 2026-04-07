@@ -97,7 +97,9 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
       orderBy,
       choiceType,
       useModernTaxonomyPickerControl,
-      listItemId
+      listItemId,
+      onAttachmentDeleted,
+      onPendingAttachmentDeleted
     } = this.props;
 
     const {
@@ -652,62 +654,49 @@ export class DynamicFieldBase extends React.Component<IDynamicFieldProps, IDynam
       case 'Attachments': {
         const attachments: { FileName: string; ServerRelativeUrl: string }[] = value || [];
         const pendingFiles: File[] = newValue || [];
+        const allAttachments = [
+          ...attachments.map(a => ({ name: a.FileName, url: `${a.ServerRelativeUrl}?web=1`, isPending: false })),
+          ...pendingFiles.map(f => ({ name: f.name, url: undefined as string, isPending: true }))
+        ];
         return <div className={styles.fieldContainer}>
           <div className={styles.titleContainer}>
             <Icon className={styles.fieldIcon} iconName={customIcon ?? "Attach"} />
             {labelEl}
           </div>
-          <Stack tokens={{ childrenGap: 4 }}>
-            {attachments.map(attachment => (
-              <Stack key={attachment.FileName} horizontal verticalAlign="center">
+          <Stack tokens={{ childrenGap: 8 }}>
+            {allAttachments.map(attachment => (
+              <Stack key={attachment.name} horizontal verticalAlign="center">
                 <DefaultButton
-                  href={listItemId ? `${attachment.ServerRelativeUrl}?web=1` : undefined}
+                  href={!attachment.isPending && listItemId ? attachment.url : undefined}
                   target="_blank"
-                  title={attachment.FileName}
-                  disabled={!listItemId}
+                  title={attachment.name}
+                  disabled={attachment.isPending || !listItemId}
                   styles={{ root: styles.attachmentButton, flexContainer: styles.attachmentButtonFlexContainer, label: styles.attachmentButtonLabel }}
                 >
-                  {attachment.FileName}
+                  {attachment.name}
                 </DefaultButton>
                 <IconButton
                   iconProps={{ iconName: 'Cancel' }}
-                  title={`Remove attachment ${attachment.FileName}`}
-                  ariaLabel={`Remove attachment ${attachment.FileName}`}
+                  title={`Remove attachment ${attachment.name}`}
+                  ariaLabel={`Remove attachment ${attachment.name}`}
                   disabled={disabled}
                   styles={{ root: styles.attachmentDeleteButton }}
+                  onClick={() => attachment.isPending ? onPendingAttachmentDeleted?.(attachment.name) : onAttachmentDeleted?.(attachment.name)}
                 />
               </Stack>
             ))}
-            {pendingFiles.map(file => (
-              <Stack key={file.name} horizontal verticalAlign="center">
-                <DefaultButton
-                  title={file.name}
-                  disabled={true}
-                  styles={{ root: styles.attachmentButton, flexContainer: styles.attachmentButtonFlexContainer, label: styles.attachmentButtonLabel }}
-                >
-                  {file.name}
-                </DefaultButton>
-                <IconButton
-                  iconProps={{ iconName: 'Cancel' }}
-                  title={`Remove attachment ${file.name}`}
-                  ariaLabel={`Remove attachment ${file.name}`}
-                  disabled={disabled}
-                  styles={{ root: styles.attachmentDeleteButton }}
-                />
-              </Stack>
-            ))}
-            {!disabled &&
+          </Stack>
+          {!disabled &&
               <>
                 <input type="file" ref={this._fileInputRef} style={{ display: 'none' }} onChange={this.onAttachmentFileChange} />
                 <DefaultButton
-                  styles={{ root: styles.attachmentAddButton }}
+                  styles={{ root: styles.attachmentAddButton, label: styles.attachmentAddButtonLabel }}
                   onClick={() => this._fileInputRef.current?.click()}
                 >
                   {strings.DynamicFormAddAttachmentsLabel}
                 </DefaultButton>
               </>
             }
-          </Stack>
         </div>;
       }
     }

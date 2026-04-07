@@ -30,6 +30,7 @@ export const getFieldStyles = (
     attachmentButtonLabel: 'attachmentButtonLabel',
     attachmentDeleteButton: 'attachmentDeleteButton',
     attachmentAddButton: 'attachmentAddButton',
+    attachmentAddButtonLabel: 'attachmentAddButtonLabel',
   };
 
   const fieldDisplayNoPadding_style: IStyle = {
@@ -163,11 +164,13 @@ export const getFieldStyles = (
       {
         width: '100%',
         border: `1px solid ${palette.neutralTertiaryAlt}`,
-        borderRadius: '2px',
+        borderBottomColor: palette.neutralSecondary,
+        borderRadius: '4px',
         color: palette.themePrimary,
         backgroundColor: 'transparent',
         textAlign: 'left',
         paddingLeft: '6px',
+        marginTop: '8px',
         selectors: {
           ':hover': {
             backgroundColor: palette.neutralLighter,
@@ -175,6 +178,13 @@ export const getFieldStyles = (
             border: `1px solid ${palette.neutralTertiaryAlt}`,
           }
         }
+      }
+    ],
+    attachmentAddButtonLabel: [
+      globalClassNames.attachmentAddButtonLabel,
+      {
+        fontWeight: '400',
+        color: palette.themePrimary,
       }
     ],
     attachmentDeleteButton: [
